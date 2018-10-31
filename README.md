@@ -1,5 +1,5 @@
 
-# Guía rápida de PDO
+# PDO Cheatsheet
 
 Esta es una guía rápida para aprender a utilizar   **PDO**. Los ejemplos que encontrarás en esta guía están pensados para   **MySQL** pero eres libre de adaptarlos a cualquier otro gestor de bases de datos soportado por PDO.
 
@@ -89,6 +89,8 @@ Estos son los 3 valores más utilizados y que nos servirán para cubrir práctic
  - PDO::FETCH_ASSOC: returns an array indexed by column name
  - PDO::FETCH_CLASS: Assigns the values of your columns to properties of the named class. It will create the properties if matching properties do not exist.
  - PDO::FETCH_OBJ: returns an anonymous object with property names that correspond to the column names
+
+Una vez indicado el cómo queremos los datos, utilizaremos el método `fetch()` para acceder a la información. El método `fetch()` obtiene la siguiente fila de un conjunto de resultados, por lo que podremos iterar por los resultados tal y como se muestra en los ejemplos siguientes:
 
 ```php
 function fetchAssoc(){
@@ -180,8 +182,8 @@ En consultas que no reciban parámetros, podemos utilizar el método abreviado `
 ```
 Por razones de seguridad (evitar [SQL Injection](https://es.wikipedia.org/wiki/Inyecci%C3%B3n_SQL)) es recomendable evitar el método `query()` cuando la sentencia incluya valores variables. Por razones de rendimiento también se recomienda utilizar `prepare()` y `execute()` en sentencias que vayan a ejecutarse varias veces.
 
-## Método fetObject()
-Existe una alternativa al método fetch() la cual devolverá los resultados cómo objetos anónimos (**`PDO::FETCH_OBJ`** ) u objetos de la clase indicada ( **`PDO::FETCH_CLASS`**). Este método se llama `fetchObject()`.
+## Método fetchObject()
+Existe una alternativa al método `fetch()` la cual devolverá los resultados cómo objetos anónimos (**`PDO::FETCH_OBJ`** ) u objetos de la clase indicada ( **`PDO::FETCH_CLASS`**). Este método se llama `fetchObject()`.
 
 ```php
 	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
@@ -201,6 +203,20 @@ En caso de que queremos que los objetos pertenezcan a una clase en concreto, es 
 		echo $persona->apellido;
 	}
 ```
+
+## Obtener todos los resultados con fetchAll()
+A diferencia del método `fetch()`, `fetchAll()` te trae todos los datos de golpe, sin abrir ningún puntero, almacenándolos en un array. Se recomienda cuando no se esperan demasiados resultados que podrían provocar problemas de memoria al querer guardar de golpe en un array miles de filas provenientes de un SELECT.
+
+```php
+	// En este caso $resultado será un array asociativo con todos los datos de la base de datos
+	$resultado = $sth->fetchAll(PDO::FETCH_ASSOC);
+	
+	// Para leer las filas podemos recorrer el array y acceder a la información.
+	foreach ($resultado as $row){
+	    echo $row["nombre"]." ".$row["apellido"].PHP_EOL;
+	}
+```
+Es casi idéntico que en `fetch()`, sólo que aquí no estamos actuando sobre un recorrido de los datos a través de un puntero, sino sobre los datos ya almacenados en una variable. Si por ejemplo antes de esto nosotros cerramos el statement, ya tenemos los datos en $resultado y podremos leerlos. En `fetch` si cerramos el statement no podremos leer los datos.
 
 ## Licencia
 

@@ -1,5 +1,5 @@
 
-# PDO Cheatsheet
+# Guía rápida de PDO
 
 Esta es una guía rápida para aprender a utilizar   **PDO**. Los ejemplos que encontrarás en esta guía están pensados para   **MySQL** pero eres libre de adaptarlos a cualquier otro gestor de bases de datos soportado por PDO.
 

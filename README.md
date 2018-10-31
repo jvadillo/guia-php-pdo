@@ -171,7 +171,9 @@ function fetch_class(){
 
 ## Licencia
 
-El objetivo de esta guía es ayudarte a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, sin ser necesario citar al autor (aunque se agradece ;-)
+Puedes utilizar esta guía para lo que quieras. El objetivo de esta guía es ayudarte a tí y a todas las personas que lo necesiten a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, sin ser necesario citar al autor o el origen de la fuente (aunque se agradece ;-)
+
+Happy coding!
 
 
 

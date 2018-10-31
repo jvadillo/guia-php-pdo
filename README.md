@@ -1,3 +1,4 @@
+
 # PDO Cheatsheet
 
 Esta es una guía rápida para aprender a utilizar   **PDO**. Los ejemplos que encontrarás en esta guía están pensados para   **MySQL** pero eres libre de adaptarlos a cualquier otro gestor de bases de datos soportado por PDO.
@@ -90,83 +91,115 @@ Estos son los 3 valores más utilizados y que nos servirán para cubrir práctic
  - PDO::FETCH_OBJ: returns an anonymous object with property names that correspond to the column names
 
 ```php
-function fetch_assoc(){
-	#This fetch type creates an associative array, indexed by column name.
-
-	# using the shortcut ->query() method here since there are no variable
-
-	# values in the select statement.
-
-	$STH = $DBH->query('SELECT name, addr, city from folks');
-
-	# setting the fetch mode
-	$STH->setFetchMode(PDO::FETCH_ASSOC);
-
-	while($row = $STH->fetch()) {
-		echo $row['name'] . "\n";
-		echo $row['addr'] . "\n";
-		echo $row['city'] . "\n";
+function fetchAssoc(){
+	// Este tipo de fetch crea un array asociativo, indexado por el nombre de la columna.
+	
+	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
+	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
+	// Establecemos el modo en el que queremos recibir los datos
+	$sth->setFetchMode(PDO::FETCH_ASSOC);
+	// Ejecutamos la sentencia
+	$stmt->execute($data);
+	// Mostramos los resultados obtenidos
+	while($row = $sth->fetch()) {
+		echo $row['nombre'] . "\n";
+		echo $row['apellidos'] . "\n";
+		echo $row['edad '] . "\n";
 	}
 }
 
 function fetch_obj(){
+	// Este método crea un objeto por cada fila obtenida de la base de datos.
 
-	#This fetch type creates an object of std class for each row of fetched data.
-
-	# creating the statement
-
-	$STH = $DBH->query('SELECT name, addr, city from folks');
-
-	# setting the fetch mode
-
-	$STH->setFetchMode(PDO::FETCH_OBJ);
-
-	# showing the results
-
+	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
+	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
+	// Establecemos el modo en el que queremos recibir los datos
+	$sth->setFetchMode(PDO::FETCH_OBJ);
+	// Ejecutamos la sentencia
+	$stmt->execute($data);
+	
+	// Mostramos los resultados obtenidos
 	while($row = $STH->fetch()) {
-		echo $row->name . "\n";
-		echo $row->addr . "\n";
-		echo $row->city . "\n";
+		echo $row->nombre . "\n";
+		echo $row->apellidos . "\n";
+		echo $row->edad . "\n";
 	}
 
 }
 
 function fetch_class(){
+	// Este método devuelve los datos como objetos de la clase que nosotros le hayamos indicado.
+	// Las propiedades del objeto se inicializarán con los datos de la base de datos antes de llamar al constructor.
 
-	#This fetch method allows you to fetch data directly into a class of your choosing.
+	// Si hubiese nombres de columnas que no tienen una propiedad en la clase, se crearán como propiedades de tipo public
 
-	#the properties of your object are set BEFORE the constructor is called.
+	// Se pueden realizar transformaciones sobre esos datos en el constructor de la clase.
 
-	#If properties matching the column names do not exist, those properties will be created (as public) for you.
+	class Alumno {
 
-	#So if your data needs any transformation after it comes out of the database,
+		public $nombre;
+		public $apellidos;
+		public $edad;
+		public $otraInformacion;
 
-	# it can be done automatically by your object as each object is created. (via __consruct() method )
-
-	class secret_person {
-
-		public $name;
-		public $addr;
-		public $city;
-		public $other_data;
-
-		function __construct($other = '') {
-			// will be called after object has valid data in its properties
-			$this->address = preg_replace('/[a-z]/', 'x', $this->address);
-			$this->other_data = $other;
+		function __construct($otraInformacion= '') {
+			// El constructor se ejecutará después de asociar los valores obtenidos de la base de datos al objeto. Por lo tanto, podemos tratar esos valores dentro del constructor.
+			$this->nombre = strtoupper($this->nombre);
+			$this->otraInformacion = $otraInformacion;
 		}
-
 	}
 
-	$STH = $DBH->query('SELECT name, addr, city from folks');
+	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
+	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
+	// Establecemos el modo en el que queremos recibir los datos
+	$sth->setFetchMode(PDO::FETCH_CLASS, 'Alumno');
+	// Ejecutamos la sentencia
+	$stmt->execute($data);
 
-	$STH->setFetchMode(PDO::FETCH_CLASS, 'secret_person');
-
-	while($obj = $STH->fetch()) {
+	// Mostramos los resultados
+	while($obj = $sth->fetch()) {
 		echo $obj->addr;
 	}
 }
 
+```
+## Método abreviado query()
+En consultas que no reciban parámetros, podemos utilizar el método abreviado `query()` el cual ejecutará la sentencia y nos devolverá el conjunto de resultados directamente. En otras palabras, no es necesario hacer la operación en 2 pasos (`prepare()` y `execute()`) como hacíamos hasta ahora.
+
+```php
+	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+
+	// Establecemos el modo en el que queremos recibir los datos
+	$sth->setFetchMode(PDO::FETCH_ASSOC);
+
+	while($row = $sth->fetch()) {
+		echo $row['nombre'] . "\n";
+		echo $row['apellidos'] . "\n";
+		echo $row['edad '] . "\n";
+	}
+```
+Por razones de seguridad (evitar [SQL Injection](https://es.wikipedia.org/wiki/Inyecci%C3%B3n_SQL)) es recomendable evitar el método `query()` cuando la sentencia incluya valores variables. Por razones de rendimiento también se recomienda utilizar `prepare()` y `execute()` en sentencias que vayan a ejecutarse varias veces.
+
+## Método fetObject()
+Existe una alternativa al método fetch() la cual devolverá los resultados cómo objetos anónimos (**`PDO::FETCH_OBJ`** ) u objetos de la clase indicada ( **`PDO::FETCH_CLASS`**). Este método se llama `fetchObject()`.
+
+```php
+	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+
+	while($persona = $sth ->fetchObject()) {
+		echo $persona->nombre;
+		echo $persona->apellido;
+	}
+```
+En caso de que queremos que los objetos pertenezcan a una clase en concreto, es suficiente con indicárselo en la llamada:
+
+```php
+	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+
+	while($persona = $sth ->fetchObject('Alumno')) {
+		echo $persona->nombre;
+		echo $persona->apellido;
+	}
 ```
 
 ## Licencia

@@ -56,7 +56,7 @@ $stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE edad > :edad"
 De la misma forma que hemos preparado una consulta de tipo SELECT, también podemos preparar un INSERT, UPDATE, etc.
 
 ```php
-$sth= $dbh->("INSERT INTO alumnos(nombre, apellidos) values (:nombre, :apellidos)");
+$stmt= $dbh->("INSERT INTO alumnos(nombre, apellidos) values (:nombre, :apellidos)");
 ```
 
 ### Ejecutar la sentencia
@@ -76,7 +76,7 @@ De la misma forma que hemos preparado una consulta de tipo SELECT, también pode
 
 ```php
 $data = array( 'nombre' => 'Mikel', 'edad' => 15 );
-$sth= $dbh->("INSERT INTO alumnos(nombre, edad) values (:nombre, :edad)");
+$stmt = $dbh->("INSERT INTO alumnos(nombre, edad) values (:nombre, :edad)");
 $stmt->execute($data);
 ```
 
@@ -99,11 +99,11 @@ function fetchAssoc(){
 	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
 	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
 	// Establecemos el modo en el que queremos recibir los datos
-	$sth->setFetchMode(PDO::FETCH_ASSOC);
+	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	// Ejecutamos la sentencia
 	$stmt->execute($data);
 	// Mostramos los resultados obtenidos
-	while($row = $sth->fetch()) {
+	while($row = $stmt->fetch()) {
 		echo $row['nombre'] . "\n";
 		echo $row['apellidos'] . "\n";
 		echo $row['edad '] . "\n";
@@ -116,12 +116,12 @@ function fetch_obj(){
 	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
 	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
 	// Establecemos el modo en el que queremos recibir los datos
-	$sth->setFetchMode(PDO::FETCH_OBJ);
+	$stmt->setFetchMode(PDO::FETCH_OBJ);
 	// Ejecutamos la sentencia
 	$stmt->execute($data);
 	
 	// Mostramos los resultados obtenidos
-	while($row = $STH->fetch()) {
+	while($row = $stmt->fetch()) {
 		echo $row->nombre . "\n";
 		echo $row->apellidos . "\n";
 		echo $row->edad . "\n";
@@ -154,12 +154,12 @@ function fetch_class(){
 	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
 	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
 	// Establecemos el modo en el que queremos recibir los datos
-	$sth->setFetchMode(PDO::FETCH_CLASS, 'Alumno');
+	$stmt->setFetchMode(PDO::FETCH_CLASS, 'Alumno');
 	// Ejecutamos la sentencia
 	$stmt->execute($data);
 
 	// Mostramos los resultados
-	while($obj = $sth->fetch()) {
+	while($obj = $stmt->fetch()) {
 		echo $obj->addr;
 	}
 }
@@ -169,12 +169,12 @@ function fetch_class(){
 En consultas que no reciban parámetros, podemos utilizar el método abreviado `query()` el cual ejecutará la sentencia y nos devolverá el conjunto de resultados directamente. En otras palabras, no es necesario hacer la operación en 2 pasos (`prepare()` y `execute()`) como hacíamos hasta ahora.
 
 ```php
-	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+	$stmt = $dbh->query('SELECT nombre, apellidos, edad from empleado');
 
 	// Establecemos el modo en el que queremos recibir los datos
-	$sth->setFetchMode(PDO::FETCH_ASSOC);
+	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-	while($row = $sth->fetch()) {
+	while($row = $stmt->fetch()) {
 		echo $row['nombre'] . "\n";
 		echo $row['apellidos'] . "\n";
 		echo $row['edad '] . "\n";
@@ -186,9 +186,9 @@ Por razones de seguridad (evitar [SQL Injection](https://es.wikipedia.org/wiki/I
 Existe una alternativa al método `fetch()` la cual devolverá los resultados cómo objetos anónimos (**`PDO::FETCH_OBJ`** ) u objetos de la clase indicada ( **`PDO::FETCH_CLASS`**). Este método se llama `fetchObject()`.
 
 ```php
-	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+	$stmt = $dbh->query('SELECT nombre, apellidos, edad from empleado');
 
-	while($persona = $sth ->fetchObject()) {
+	while($persona = $stmt ->fetchObject()) {
 		echo $persona->nombre;
 		echo $persona->apellido;
 	}
@@ -196,9 +196,9 @@ Existe una alternativa al método `fetch()` la cual devolverá los resultados c�
 En caso de que queremos que los objetos pertenezcan a una clase en concreto, es suficiente con indicárselo en la llamada:
 
 ```php
-	$sth = $dbh->query('SELECT nombre, apellidos, edad from empleado');
+	$stmt = $dbh->query('SELECT nombre, apellidos, edad from empleado');
 
-	while($persona = $sth ->fetchObject('Alumno')) {
+	while($persona = $stmt ->fetchObject('Alumno')) {
 		echo $persona->nombre;
 		echo $persona->apellido;
 	}
@@ -209,7 +209,7 @@ A diferencia del método `fetch()`, `fetchAll()` te trae todos los datos de golp
 
 ```php
 	// En este caso $resultado será un array asociativo con todos los datos de la base de datos
-	$resultado = $sth->fetchAll(PDO::FETCH_ASSOC);
+	$resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	
 	// Para leer las filas podemos recorrer el array y acceder a la información.
 	foreach ($resultado as $row){

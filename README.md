@@ -56,7 +56,7 @@ $stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE edad > :edad"
 De la misma forma que hemos preparado una consulta de tipo SELECT, también podemos preparar un INSERT, UPDATE, etc.
 
 ```php
-$stmt= $dbh->("INSERT INTO alumnos(nombre, apellidos) values (:nombre, :apellidos)");
+$stmt= $dbh->prepare("INSERT INTO alumnos(nombre, apellidos) values (:nombre, :apellidos)");
 ```
 
 ### Ejecutar la sentencia
@@ -76,7 +76,7 @@ De la misma forma que hemos preparado una consulta de tipo SELECT, también pode
 
 ```php
 $data = array( 'nombre' => 'Mikel', 'edad' => 15 );
-$stmt = $dbh->("INSERT INTO alumnos(nombre, edad) values (:nombre, :edad)");
+$stmt = $dbh->prepare("INSERT INTO alumnos(nombre, edad) values (:nombre, :edad)");
 $stmt->execute($data);
 ```
 

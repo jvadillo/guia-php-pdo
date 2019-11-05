@@ -86,9 +86,9 @@ Una vez ejecutada la sentencia `execute()` podremos acceder a los resultados obt
 
 Estos son los 3 valores más utilizados y que nos servirán para cubrir prácticamente todas nuestras necesidades:
 
- - PDO::FETCH_ASSOC: returns an array indexed by column name
- - PDO::FETCH_CLASS: Assigns the values of your columns to properties of the named class. It will create the properties if matching properties do not exist.
- - PDO::FETCH_OBJ: returns an anonymous object with property names that correspond to the column names
+ - PDO::FETCH_ASSOC: devuelve un array cuyos índices serán los nombres de las columnas.
+ - PDO::FETCH_CLASS: Asigna los valores de las columnas a las propiedades de la clase. Creará nuevas propiedades en caso de que no existan para las columnas.
+ - PDO::FETCH_OBJ: devuelve objetos anónimos con propiedades que corresponden a los nombres de columna.
 
 Una vez indicado el cómo queremos los datos, utilizaremos el método `fetch()` para acceder a la información. El método `fetch()` obtiene la siguiente fila de un conjunto de resultados, por lo que podremos iterar por los resultados tal y como se muestra en los ejemplos siguientes:
 

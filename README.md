@@ -97,7 +97,7 @@ function fetchAssoc(){
 	// Este tipo de fetch crea un array asociativo, indexado por el nombre de la columna.
 	
 	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
-	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
+	$stmt = $dbh->prepare("SELECT nombre, apellidos, edad FROM alumnos WHERE nombre = :nombre AND edad = :edad");
 	// Establecemos el modo en el que queremos recibir los datos
 	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 	// Ejecutamos la sentencia
@@ -114,7 +114,7 @@ function fetch_obj(){
 	// Este método crea un objeto por cada fila obtenida de la base de datos.
 
 	$data = array( 'nombre' => 'Mikel', 'edad' => 15 );
-	$stmt = $dbh->prepare("SELECT nombre, apellidos FROM alumnos WHERE nombre = :nombre AND edad = :edad");
+	$stmt = $dbh->prepare("SELECT nombre, apellidos, edad FROM alumnos WHERE nombre = :nombre AND edad = :edad");
 	// Establecemos el modo en el que queremos recibir los datos
 	$stmt->setFetchMode(PDO::FETCH_OBJ);
 	// Ejecutamos la sentencia
@@ -160,7 +160,7 @@ function fetch_class(){
 
 	// Mostramos los resultados
 	while($obj = $stmt->fetch()) {
-		echo $obj->addr;
+		echo $obj->nombre;
 	}
 }
 
@@ -190,7 +190,7 @@ Existe una alternativa al método `fetch()` la cual devolverá los resultados c�
 
 	while($persona = $stmt ->fetchObject()) {
 		echo $persona->nombre;
-		echo $persona->apellido;
+		echo $persona->apellidos;
 	}
 ```
 En caso de que queremos que los objetos pertenezcan a una clase en concreto, es suficiente con indicárselo en la llamada:
@@ -200,7 +200,7 @@ En caso de que queremos que los objetos pertenezcan a una clase en concreto, es 
 
 	while($persona = $stmt ->fetchObject('Alumno')) {
 		echo $persona->nombre;
-		echo $persona->apellido;
+		echo $persona->apellidos;
 	}
 ```
 

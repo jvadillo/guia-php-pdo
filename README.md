@@ -218,9 +218,9 @@ A diferencia del método `fetch()`, `fetchAll()` te trae todos los datos de golp
 ```
 Es casi idéntico que en `fetch()`, sólo que aquí no estamos actuando sobre un recorrido de los datos a través de un puntero, sino sobre los datos ya almacenados en una variable. Si por ejemplo antes de esto nosotros cerramos el statement, ya tenemos los datos en $resultado y podremos leerlos. En `fetch` si cerramos el statement no podremos leer los datos.
 
-## Licencia
+## Licencia: CC BY-SA
 
-Puedes utilizar esta guía para lo que quieras. El objetivo de esta guía es ayudarte a tí y a todas las personas que lo necesiten a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, sin ser necesario citar al autor o el origen de la fuente (aunque se agradece ;-)
+Puedes utilizar esta guía para lo que quieras. El objetivo de esta guía es ayudarte a tí y a todas las personas que lo necesiten a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, siempre y cuando cites al autor.
 
 Happy coding!
 

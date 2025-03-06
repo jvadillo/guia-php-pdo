@@ -308,6 +308,40 @@ A continuación, mostramos los registros en una tabla HTML:
 
 Este método asegura una manipulación segura de datos y evita problemas de seguridad como la inyección SQL.
 
+## Uso de transacciones en PDO
+
+Las transacciones permiten agrupar varias operaciones en una sola unidad de trabajo, asegurando que todas se completen correctamente o ninguna se aplique.
+
+### 1. Iniciar, confirmar y deshacer transacciones
+
+```php
+function transactionExample($dbh) {
+    try {
+        $dbh->beginTransaction();
+
+        $stmt = $dbh->prepare("INSERT INTO alumnos (nombre, apellidos, edad) VALUES (:nombre, :apellidos, :edad)");
+
+        $stmt->execute(['nombre' => 'Carlos', 'apellidos' => 'Fernández', 'edad' => 23]);
+        $stmt->execute(['nombre' => 'Lucía', 'apellidos' => 'Gómez', 'edad' => 21]);
+
+        // Confirmar la transacción
+        $dbh->commit();
+    } catch (Exception $e) {
+        // Deshacer la transacción en caso de error
+        $dbh->rollBack();
+        echo "Error: " . $e->getMessage();
+    }
+}
+```
+
+### Explicación
+1. **`beginTransaction()`**: Inicia la transacción.
+2. **Ejecución de consultas**: Se ejecutan varias consultas dentro de la transacción.
+3. **`commit()`**: Confirma los cambios si todas las consultas son exitosas.
+4. **`rollBack()`**: Revierte los cambios si ocurre un error.
+
+El uso de transacciones es ideal para garantizar la integridad de los datos en operaciones que involucran varias consultas dependientes entre sí.
+
 ## Licencia: CC BY-SA
 
 Puedes utilizar esta guía para lo que quieras. El objetivo de esta guía es ayudarte a tí y a todas las personas que lo necesiten a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, siempre y cuando cites al autor.

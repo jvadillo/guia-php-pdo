@@ -218,6 +218,96 @@ A diferencia del método `fetch()`, `fetchAll()` te trae todos los datos de golp
 ```
 Es casi idéntico que en `fetch()`, sólo que aquí no estamos actuando sobre un recorrido de los datos a través de un puntero, sino sobre los datos ya almacenados en una variable. Si por ejemplo antes de esto nosotros cerramos el statement, ya tenemos los datos en $resultado y podremos leerlos. En `fetch` si cerramos el statement no podremos leer los datos.
 
+## Ejemplo de inserción múltiple y visualización en HTML
+
+En esta sección, veremos un ejemplo en el que insertamos varios registros en una base de datos utilizando un bucle y luego los mostramos en una página HTML.
+
+### 1. Crear la tabla en la base de datos
+
+Antes de insertar registros, necesitamos una tabla en la base de datos. Supongamos que tenemos la siguiente estructura en MySQL:
+
+```sql
+CREATE TABLE alumnos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50),
+    apellidos VARCHAR(50),
+    edad INT
+);
+```
+
+### 2. Insertar varios registros mediante un bucle en PHP
+
+El siguiente código muestra cómo insertar varios registros en la tabla `alumnos` utilizando un bucle con PDO:
+
+```php
+function insertMultipleRecords($dbh) {
+    $alumnos = [
+        ['nombre' => 'Juan', 'apellidos' => 'Pérez', 'edad' => 20],
+        ['nombre' => 'Ana', 'apellidos' => 'García', 'edad' => 22],
+        ['nombre' => 'Luis', 'apellidos' => 'Martínez', 'edad' => 21]
+    ];
+
+    $stmt = $dbh->prepare("INSERT INTO alumnos (nombre, apellidos, edad) VALUES (:nombre, :apellidos, :edad)");
+    
+    foreach ($alumnos as $alumno) {
+        $stmt->execute($alumno);
+    }
+}
+```
+
+### 3. Mostrar los registros en una página HTML
+
+Una vez insertados los registros, podemos recuperarlos y mostrarlos en una página web:
+
+```php
+function fetchAllRecords($dbh) {
+    $stmt = $dbh->query("SELECT * FROM alumnos");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+$alumnos = fetchAllRecords($dbh);
+```
+
+A continuación, mostramos los registros en una tabla HTML:
+
+```php
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Alumnos</title>
+</head>
+<body>
+    <h2>Lista de Alumnos</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Edad</th>
+        </tr>
+        <?php foreach ($alumnos as $alumno): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($alumno['id']); ?></td>
+                <td><?php echo htmlspecialchars($alumno['nombre']); ?></td>
+                <td><?php echo htmlspecialchars($alumno['apellidos']); ?></td>
+                <td><?php echo htmlspecialchars($alumno['edad']); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</body>
+</html>
+```
+
+### Explicación del código
+
+1. **Insertar registros**: Se usa `prepare()` y `execute()` dentro de un bucle para insertar varios registros de forma segura.
+2. **Recuperar registros**: Se usa `fetchAll(PDO::FETCH_ASSOC)` para obtener todos los registros como un array asociativo.
+3. **Mostrar en HTML**: Se genera una tabla en la que iteramos sobre los datos obtenidos para mostrarlos en pantalla.
+
+Este método asegura una manipulación segura de datos y evita problemas de seguridad como la inyección SQL.
+
 ## Licencia: CC BY-SA
 
 Puedes utilizar esta guía para lo que quieras. El objetivo de esta guía es ayudarte a tí y a todas las personas que lo necesiten a utilizar PDO de forma correcta. Puedes utilizar este contenido de la forma que lo creas conveniente, siempre y cuando cites al autor.
